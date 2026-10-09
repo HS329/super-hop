@@ -20,7 +20,8 @@
     "exe": "node scripts/build-exe.mjs",
     "exe:self": "node scripts/build-exe.mjs --self-contained",
     "verify:exe": "node scripts/verify-exe.mjs",
-    "run:exe": "dist-exe\\win\\SUPER-HOP.exe"
+    "run:exe": "dist-exe\\win\\SUPER-HOP.exe",
+    "gh:deploy": "node scripts/gh-deploy.mjs"
   },
   "dependencies": {
     "three": "^0.180.0"

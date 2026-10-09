@@ -5,7 +5,7 @@ three.jsだけで作った、**ジャンプのない**3Dアクションゲーム
 
 ![町を登る](docs/cover-climb.png)
 
-- 遊ぶ: GitHub Pagesを設定するとURLが出ます（`.github/workflows/pages.yml` が入っています）
+- 遊ぶ: https://hs329.github.io/super-hop/ （GitHub Pages。組み出しは gh-pages ブランチに置いてあります。更新は `npm run gh:deploy`）
 
 | | |
 | --- | --- |
@@ -74,6 +74,17 @@ npm run verify:pack    # 単体フォルダーで動くかの検査（先に npm
 `verify:hop` はPlaywrightを使います。`npx playwright install chromium` か、既存のChromeを指すなら `HOP_BROWSER=C:\path\to\chrome.exe` を指定してください。
 
 ゲーム内部を読むだけの診断APIとして `window.__HOP__.snapshot()` があります（状態は変えません）。面の設計・物理の数値・ホバリングの仕様・言語の仕組みなどは [platformer/README.md](platformer/README.md) に書いています。
+
+## サイトを更新する
+
+https://hs329.github.io/super-hop/ は **gh-pages ブランチ**（組み出し済みの `index.html` と `assets/`）をそのまま配信しています。main にpushしてもサイトは変わらないので、反映させたいときは:
+
+```powershell
+$env:GH_TOKEN = "ghp_……"   # repo スコープのトークンで足ります（workflow スコープは不要）
+npm run gh:deploy           # build → pack:hop → gh-pages へ force push → Pagesが自動で再デプロイ
+```
+
+Pagesの設定は Settings → Pages → "Deploy from a branch" / `gh-pages` / `root` です（Actionsは使っていません）。
 
 ## 依存
 
