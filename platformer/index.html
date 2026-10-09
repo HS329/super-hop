@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b2430'/%3E%3Cpath d='M16 5l8 12h-5v10h-6V17H8z' fill='%23ffd24a' stroke='%23a06a00' stroke-width='2'/%3E%3C/svg%3E" />
+    <title>SUPER HOP — そらへのぼる町</title>
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+
+    <div id="flash"></div>
+    <div id="toast"></div>
+
+    <header id="hud" hidden>
+      <div class="hud-left">
+        <div class="stat"><span class="tag">COIN</span><b id="coin-count">00</b></div>
+        <div class="stat"><span class="tag" data-i18n="hudHeight">HEIGHT</span><b id="height-count">0m</b></div>
+        <div class="stat"><span class="tag" data-i18n="hudFalls">FALLS</span><b id="fall-count">×00</b></div>
+        <div class="stat"><span class="tag">TIME</span><b id="time-count">00:00</b></div>
+        <div class="stat"><span class="tag">SCORE</span><b id="score-count">000000</b></div>
+        <div class="stat pump" id="pump-meter" data-active="0">
+          <span class="tag" data-i18n="pumpLabel">PUMP</span>
+          <span class="pump-track"><i id="pump-fill"></i></span>
+        </div>
+        <div class="stat hover" id="hover-meter" data-ready="1">
+          <span class="tag" data-i18n="hoverLabel">HOVER</span>
+          <span class="hover-track"><i id="hover-fill"></i></span>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="stat wind" id="wind-mark" hidden>
+          <span class="tag" data-i18n="hudWind">WIND</span><b id="wind-arrow">▶</b>
+        </div>
+        <div class="hud-buttons">
+          <button id="help" type="button" data-i18n="hudHelp">操作</button>
+          <button id="sound" type="button"><span data-i18n="hudSound">SOUND</span> <b id="sound-state">ON</b></button>
+          <button id="pause-btn" type="button" data-i18n="hudPause">PAUSE</button>
+        </div>
+        <div class="height-wrap">
+          <span id="progress-label">0%</span>
+          <div class="progress-track"><div id="progress-fill"></div></div>
+          <span class="height-top" data-i18n="hudTopShort">TOP</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="title">
+      <p class="kicker" data-i18n="kicker">THREE.JS VERTICAL ACTION</p>
+      <h1>SUPER <span>HOP</span></h1>
+      <p class="stage" id="world-tag">「そらへのぼる町」</p>
+      <p class="blurb" id="blurb" data-i18n-html="blurb"></p>
+      <p id="world-brief" class="world-desc"></p>
+      <div id="lang-select" class="seg-row" role="group" aria-label="表示言語">
+        <span class="seg-label" data-i18n="langLabel">言語</span>
+        <button class="seg-btn" type="button" data-lang="ja" aria-pressed="true">日本語</button>
+        <button class="seg-btn" type="button" data-lang="en" aria-pressed="false">English</button>
+        <kbd>L</kbd>
+      </div>
+      <button id="start" type="button" data-i18n="start">START — ENTER</button>
+      <div id="guide-static" class="keys">
+        <div><kbd>E</kbd><kbd>RT</kbd><span data-i18n="guidePump">ポンプ 長押しでチャージ → 離した方向へ打ち上がる（ジャンプはない）</span></div>
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd><span data-i18n="guideAim">溜めている間は倒した方向へ体を傾ける＝狙い。空中では少しだけ舵が取れる</span></div>
+        <div><kbd>Q</kbd><kbd>A</kbd><span data-i18n="guideHover">ホバリング 空中で1回だけ。押している間（最大1秒）落下を止めて水平に進む</span></div>
+        <div><kbd>SHIFT</kbd><span data-i18n="guideRun">走る</span> <kbd data-i18n="keyDrag">ドラッグ</kbd><span data-i18n="guideDrag">視点回転</span> <kbd data-i18n="keyWheel">ホイール</kbd><span data-i18n="guideZoom">ズーム</span> <kbd>C</kbd><span data-i18n="guideCamReset">視点リセット</span></div>
+        <div><kbd>L</kbd><span data-i18n="guideLang">言語 日本語/English</span> <kbd>M</kbd><span data-i18n="guideSound">音</span> <kbd>ESC</kbd><span data-i18n="guidePause">ポーズ</span></div>
+        <div><kbd>CONTROLLER</kbd><span id="pad-state" data-on="0" data-i18n="padIdle">未接続 — 接続すると自動対応</span></div>
+      </div>
+    </section>
+
+    <section id="clear" hidden>
+      <p class="kicker" data-i18n="clearKicker">SUMMIT!</p>
+      <h2 data-i18n="clearTitle">頂上に到達</h2>
+      <div id="clear-stats" class="stats"></div>
+      <div class="row">
+        <button id="retry" type="button" data-i18n="clearRetry">もう一度のぼる</button>
+        <button id="again" type="button" class="ghost" data-i18n="clearBack">タイトルへ</button>
+      </div>
+    </section>
+
+    <section id="pause-panel" hidden>
+      <p class="kicker">PAUSED</p>
+      <h2 data-i18n="pauseTitle">一時停止</h2>
+      <div id="guide" class="keys">
+        <div><kbd>E</kbd><kbd>RT</kbd><kbd>SPACE</kbd><span data-i18n="guidePumpAlt">ポンプ 長押しでチャージ → 離した方向へ打ち上がる</span></div>
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd><span data-i18n="guideAim">溜めている間は倒した方向へ体を傾ける＝狙い。空中では少しだけ舵が取れる</span></div>
+        <div><kbd>Q</kbd><kbd>A</kbd><span data-i18n="guideHover">ホバリング 空中で1回だけ。押している間（最大1秒）落下を止めて水平に進む</span></div>
+        <div><kbd>SHIFT</kbd><span data-i18n="guideRun">走る</span> <kbd data-i18n="keyDrag">ドラッグ</kbd><span data-i18n="guideDrag">視点回転</span> <kbd data-i18n="keyWheel">ホイール</kbd><span data-i18n="guideZoom">ズーム</span> <kbd>C</kbd><span data-i18n="guideCamReset">視点リセット</span></div>
+        <div><kbd>L</kbd><span data-i18n="guideLang">言語 日本語/English</span> <kbd>M</kbd><span data-i18n="guideSoundAlt">音 ON/OFF</span> <kbd>ESC</kbd><span data-i18n="guideResume">再開 / ポーズ</span></div>
+        <div><kbd>CONTROLLER</kbd><span data-i18n="guidePad">左スティック移動・狙い / RT ポンプ / A ホバリング / 右スティック視点 / Startポーズ</span></div>
+        <div><span data-i18n="guideFall">足場から落ちても死なない。いちばん下の地面に立つだけ。落としたぶんをまた登る</span></div>
+      </div>
+      <div class="row"><button id="close-help" type="button" data-i18n="pauseBack">もどる</button></div>
+    </section>
+
+    <footer id="hint">
+      <span data-i18n="hintPump">E / RT ポンプ</span><span data-i18n="hintHover">Q / A ホバリング</span><span data-i18n="hintAim">倒した方向へ狙う</span><span data-i18n="hintRun">SHIFT 走る</span><span data-i18n="hintCam">ドラッグ 視点</span><span data-i18n="hintFall">落ちたら地面に戻る</span><span data-i18n="hintPad">コントローラー対応</span>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

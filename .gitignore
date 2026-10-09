@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-exe/
+share/
+artifacts/
+desktop/bin/
+desktop/obj/
+.tmp*/
+*.log
+.DS_Store

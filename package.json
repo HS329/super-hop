@@ -1,0 +1,32 @@
+{
+  "name": "super-hop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SUPER HOP — そらへのぼる町。three.jsだけの、ジャンプのない3Dアクション。",
+  "scripts": {
+    "dev:hop": "vite --host 127.0.0.1 --port 5175 --configLoader native --open /platformer/",
+    "dev:hop:lan": "vite --host 0.0.0.0 --port 5175 --configLoader native /platformer/",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check:climb": "node scripts/check-climb.mjs",
+    "verify:hop": "node scripts/verify-hop.mjs",
+    "shots:hop": "node scripts/shots-hop.mjs",
+    "cover:hop": "node scripts/cover-hop.mjs",
+    "probe:hover": "node scripts/probe-hover-reach.mjs",
+    "pack:hop": "node scripts/pack-hop.mjs share/super-hop share/SUPER-HOP.zip",
+    "serve:pack": "node scripts/serve-static.mjs share/super-hop 5177",
+    "verify:pack": "node scripts/verify-pack.mjs",
+    "exe": "node scripts/build-exe.mjs",
+    "exe:self": "node scripts/build-exe.mjs --self-contained",
+    "verify:exe": "node scripts/verify-exe.mjs",
+    "run:exe": "dist-exe\\win\\SUPER-HOP.exe"
+  },
+  "dependencies": {
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "vite": "^7.1.7"
+  }
+}
